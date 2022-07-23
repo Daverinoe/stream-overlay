@@ -23,10 +23,10 @@ var __code_runner: CodeRunner = CodeRunner.new(__FUNCTION_SIGNATURE)
 func start(channel: String = "", token: String = "") -> bool:
 	__twitch = Gift.new()
 	add_child(__twitch)
-
+	
 	if !channel:
 		channel = OS.get_environment("STREAM_MANAGER_CHANNEL")
-		
+	
 	if !token:
 		token = OS.get_environment("STREAM_MANAGER_TOKEN")
 
@@ -35,7 +35,7 @@ func start(channel: String = "", token: String = "") -> bool:
 	__twitch.connect_to_twitch()
 	yield(__twitch, "twitch_connected")
 
-	__twitch.authenticate_oauth("TheYagich", token)
+	__twitch.authenticate_oauth("Botterinoe", token)
 	if(yield(__twitch, "login_attempt") == false):
 		print("Invalid token.") # TODO: Update to logger
 		return false
@@ -95,7 +95,7 @@ func __handle_command(command_data: DataCommand, user: String, params: Array) ->
 
 func __has_permission(sender: SenderData, command_data: DataCommand) -> bool:
 	# TODO: Don't hardcode streamer
-	if sender.user == "velopman":
+	if sender.user == "Daverinoe":
 		return true
 
 	match command_data.access_type:

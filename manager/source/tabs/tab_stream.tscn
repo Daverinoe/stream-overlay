@@ -23,32 +23,32 @@ margin_bottom = 716.0
 
 [node name="label_channel" type="Label" parent="container_stream/container_controls"]
 margin_right = 1268.0
-margin_bottom = 26.0
+margin_bottom = 22.0
 text = "Channel (Can be set via `STREAM_MANAGER_CHANNEL` environment variable):"
 
 [node name="edit_channel" type="LineEdit" parent="container_stream/container_controls"]
-margin_top = 30.0
+margin_top = 26.0
 margin_right = 1268.0
-margin_bottom = 56.0
+margin_bottom = 48.0
 placeholder_text = "Channel"
 
 [node name="label_token" type="Label" parent="container_stream/container_controls"]
-margin_top = 60.0
+margin_top = 52.0
 margin_right = 1268.0
-margin_bottom = 86.0
+margin_bottom = 74.0
 text = "Access token (Can be set via STREAM_MANAGER_TOKEN` environment variable):"
 
 [node name="edit_token" type="LineEdit" parent="container_stream/container_controls"]
-margin_top = 90.0
+margin_top = 78.0
 margin_right = 1268.0
-margin_bottom = 116.0
+margin_bottom = 100.0
 secret = true
 placeholder_text = "Access token"
 
 [node name="button_start" type="Button" parent="container_stream/container_controls"]
-margin_top = 120.0
-margin_right = 52.0
-margin_bottom = 146.0
+margin_top = 104.0
+margin_right = 41.0
+margin_bottom = 126.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "start"
