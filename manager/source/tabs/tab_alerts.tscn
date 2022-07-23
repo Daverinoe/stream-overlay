@@ -11,14 +11,30 @@ script = ExtResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="scroll_controls" type="ScrollContainer" parent="container_alerts"]
+[node name="center_container" type="VBoxContainer" parent="container_alerts"]
 margin_left = 6.0
 margin_top = 4.0
 margin_right = 1274.0
 margin_bottom = 716.0
 
-[node name="container_controls" type="VBoxContainer" parent="container_alerts/scroll_controls"]
+[node name="scroll_controls" type="ScrollContainer" parent="container_alerts/center_container"]
 margin_right = 1268.0
-margin_bottom = 712.0
+margin_bottom = 686.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="container_controls" type="VBoxContainer" parent="container_alerts/center_container/scroll_controls"]
+margin_right = 1268.0
+margin_bottom = 686.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="start_server_button" type="Button" parent="container_alerts/center_container"]
+margin_top = 690.0
+margin_right = 1268.0
+margin_bottom = 712.0
+size_flags_vertical = 8
+text = "Start Alert Server"
+
+[connection signal="pressed" from="container_alerts/center_container/start_server_button" to="." method="_on_start_server_button_pressed"]

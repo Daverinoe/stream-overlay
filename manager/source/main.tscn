@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://assets/themes/panel_light_theme.tres" type="StyleBox" id=1]
 [ext_resource path="res://source/components/status.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://source/components/dialog_profile_name.gd" type="Script" id=6]
 [ext_resource path="res://source/components/dialog_file_path.gd" type="Script" id=7]
 [ext_resource path="res://source/tabs/tab_stream.tscn" type="PackedScene" id=8]
+[ext_resource path="res://source/tabs/tab_alerts.tscn" type="PackedScene" id=9]
 
 [sub_resource type="InputEventKey" id=1]
 alt = true
@@ -87,6 +88,9 @@ margin_left = 5.0
 margin_top = 33.0
 margin_right = -5.0
 margin_bottom = -5.0
+
+[node name="Alerts" parent="container_content/tabs_content" instance=ExtResource( 9 )]
+visible = false
 
 [node name="panel_footer" type="PanelContainer" parent="container_content"]
 margin_top = 674.0
