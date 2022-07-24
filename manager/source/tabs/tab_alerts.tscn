@@ -30,11 +30,11 @@ margin_bottom = 686.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="start_server_button" type="Button" parent="container_alerts/center_container"]
+[node name="restart_server_button" type="Button" parent="container_alerts/center_container"]
 margin_top = 690.0
 margin_right = 1268.0
 margin_bottom = 712.0
 size_flags_vertical = 8
-text = "Start Alert Server"
+text = "Restart Alert Server"
 
-[connection signal="pressed" from="container_alerts/center_container/start_server_button" to="." method="_on_start_server_button_pressed"]
+[connection signal="pressed" from="container_alerts/center_container/restart_server_button" to="." method="_on_start_server_button_pressed"]

@@ -1,9 +1,10 @@
 extends HBoxContainer
+class_name Status
 
 
 # Enums
 
-enum { SUCCESS = 0, WARN, ERROR , CHECKING}
+enum { SUCCESS = 0, WARN, ERROR, CHECKING, }
 
 # Public variables
 
@@ -40,7 +41,7 @@ func __state_set(value: int) -> void:
 
 	if __icons != null:
 		for index in __icons.size():
-			__icons[index].visible = index == value
+			__icons[index].visible = (index == value)
 			if value == self.CHECKING:
 				$AnimationPlayer.play("checking")
 			else:

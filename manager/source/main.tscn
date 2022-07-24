@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://assets/themes/panel_light_theme.tres" type="StyleBox" id=1]
 [ext_resource path="res://source/components/status.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://source/components/dialog_file_path.gd" type="Script" id=7]
 [ext_resource path="res://source/tabs/tab_stream.tscn" type="PackedScene" id=8]
 [ext_resource path="res://source/tabs/tab_alerts.tscn" type="PackedScene" id=9]
+[ext_resource path="res://source/helpers/status_manager.gd" type="Script" id=10]
 
 [sub_resource type="InputEventKey" id=1]
 alt = true
@@ -106,6 +107,7 @@ margin_bottom = 31.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 alignment = 2
+script = ExtResource( 10 )
 
 [node name="status_ngrok" parent="container_content/panel_footer/_" instance=ExtResource( 2 )]
 margin_left = 1006.0
@@ -163,3 +165,5 @@ margin_bottom = -245.0
 rect_min_size = Vector2( 640, 360 )
 popup_exclusive = true
 script = ExtResource( 7 )
+
+[node name="Timer" type="Timer" parent="."]

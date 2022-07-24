@@ -13,5 +13,4 @@ func _ready() -> void:
 
 
 func _on_start_server_button_pressed() -> void:
-	alert_server = AlertManager.new()
-	self.call_deferred("add_child", alert_server)
+	AlertManager.restart()
