@@ -57,7 +57,7 @@ func to_utf8() -> PoolByteArray:
 		data = Status.code_to_description(__status)
 
 	if __headers.get("content-type", "") == "application/json":
-		data = JSON.print(data)
+		data = JSON.Console.log(data)
 
 	if data:
 		__headers["content-length"] = len(data)

@@ -8,7 +8,7 @@ static func debug(message: String) -> void:
 
 
 static func info(message: String) -> void:
-	print("[INF] %s" % message)
+	Console.log("[INF] %s" % message)
 
 
 static func warn(message: String) -> void:

@@ -37,7 +37,7 @@ func start(channel: String = "", token: String = "") -> bool:
 
 	__twitch.authenticate_oauth("Botterinoe", token)
 	if(yield(__twitch, "login_attempt") == false):
-		print("Invalid token.") # TODO: Update to logger
+		Console.log("Invalid token.") # TODO: Update to logger
 		return false
 	__twitch.join_channel(channel)
 
@@ -51,7 +51,7 @@ func set_command_data(data: Array) -> void:
 # Private methods
 
 func __chat_message(sender: SenderData, message: String, _channel: String) -> void:
-	print(sender.tags)
+	Console.log(sender.tags)
 
 	# TODO: Update case for when someone sends a message
 	if !message.begins_with("!"):

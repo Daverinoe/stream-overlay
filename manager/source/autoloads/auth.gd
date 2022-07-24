@@ -61,13 +61,13 @@ func _ready() -> void:
 	__get_ngrok_endpoint()
 	yield(self, "__ngrok_found")
 	__callback_endpoint = __ngrok_endpoint + __endpoint_name
-	print("Alert server callback endpoint: %s" % __callback_endpoint)
+	Console.log("Alert server callback endpoint: %s" % __callback_endpoint)
 	if __callback_endpoint != __endpoint_name:
 		__request_user_auth()
-		print("User auth requested.")
+		Console.log("User auth requested.")
 		
 		yield(self, "auth_code_set")
-		print("Auth code set!")
+		Console.log("Auth code set!")
 		
 		yield(self.__get_app_token(), "completed")
 		app_token = __app_token
@@ -100,7 +100,7 @@ func __get_ngrok_endpoint() -> void:
 		
 		var url = __http_response["tunnels"][0].public_url
 		__ngrok_endpoint = url.replace("http://", "https://")
-		print("ngrok endpoint: %s" % __ngrok_endpoint)
+		Console.log("ngrok endpoint: %s" % __ngrok_endpoint)
 		self.emit_signal("__ngrok_found", Status.SUCCESS)
 	else:
 		__get_ngrok_endpoint()
@@ -122,7 +122,7 @@ func __request_user_auth() -> void:
 	params += "&state=%s" % __check_string
 	
 	OS.shell_open(__twitch_auth_URI + params)
-	print("Requesting user auth")
+	Console.log("Requesting user auth")
 	
 	subs.queue_free()
 
@@ -164,7 +164,7 @@ func __get_app_token() -> void:
 	
 	__http_request.request(__twitch_token_URI, [], true, post, post_params)
 	
-	print("Requesting app token")
+	Console.log("Requesting app token")
 	
 	var response = yield(__http_request, "request_completed")
 	
@@ -173,9 +173,9 @@ func __get_app_token() -> void:
 	body = JSON.parse(body).result
 	
 	__app_token = body["access_token"]
-	print("App token received.")
+	Console.log("App token received.")
 	
-	print("Checking app token validity")
+	Console.log("Checking app token validity")
 	__check_token(__app_token)
 
 
@@ -201,7 +201,7 @@ func __get_user_token() -> void:
 	
 	__http_request.request(__twitch_token_URI, [], true, post, post_params)
 	
-	print("Requesting user token")
+	Console.log("Requesting user token")
 	
 	var response = yield(__http_request, "request_completed")
 	
@@ -211,9 +211,9 @@ func __get_user_token() -> void:
 	
 	__user_token = body["access_token"]
 	
-	print("User token received.")
+	Console.log("User token received.")
 	
-	print("Checking user token validity")
+	Console.log("Checking user token validity")
 	__check_token(__user_token)
 
 
@@ -239,14 +239,14 @@ func __check_token(token : String) -> void:
 	var body = __parse_body(response)
 	
 	if body["expires_in"] < 3600:
-		print("Token expiring soon. Requesting new token.")
+		Console.log("Token expiring soon. Requesting new token.")
 		match token:
 			__app_token:
 				__get_app_token()
 			__user_token:
 				__get_user_token()
 	else:
-		print("Token valid!")
+		Console.log("Token valid!")
 	
 
 
@@ -258,8 +258,8 @@ func __parse_body(response) -> Dictionary:
 
 
 func __check_tokens() -> void:
-	print("Checking app token validity")
+	Console.log("Checking app token validity")
 	__check_token(__app_token)
 	
-	print("Checking user token validity")
+	Console.log("Checking user token validity")
 	__check_token(__user_token)

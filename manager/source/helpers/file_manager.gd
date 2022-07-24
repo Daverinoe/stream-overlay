@@ -6,7 +6,7 @@ class_name FileManager
 static func delete_file(path: String, relative: bool = true) -> void:
 	var directory: Directory = Directory.new()
 	var error = directory.remove(__qualify_path(path, relative))
-	print(error)
+	Console.log(error)
 
 
 static func file_exists(path: String, relative: bool = true) -> bool:
@@ -66,7 +66,7 @@ static func save_file(path: String, content: String, relative: bool = true) -> v
 
 
 static func save_json(path: String, content, relative: bool = true) -> void:
-	save_file(path, JSON.print(content), relative)
+	save_file(path, JSON.Console.log(content), relative)
 
 
 # Private methods

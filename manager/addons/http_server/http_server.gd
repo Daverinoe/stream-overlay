@@ -24,7 +24,7 @@ var __server: TCP_Server = null
 func endpoint(type: int, endpoint: String, function: FuncRef) -> void:
 	var endpoint_hash: Array = [type, endpoint]
 	if endpoint_hash in __endpoints:
-		print(
+		Console.log(
 			"[ERR] Endpoint already defined type: %s, endpoint: %s" % [
 				Method.type_to_identifier(type),
 				endpoint,
@@ -41,7 +41,7 @@ func fallback(function: FuncRef) -> void:
 
 func process_connection() -> void:
 	if !is_listening():
-		print(
+		Console.log(
 			"[ERR] Server is not listening, please initialize and listen before calling `take_connection`"
 		)
 		return
@@ -95,7 +95,7 @@ func __process_connection(connection: StreamPeerTCP) -> void:
 	var header_index: int = content_parts.find("")
 
 	if header_index == -1:
-		print(
+		Console.log(
 			"[ERR] Error parsing request data: %s" % [String(content)]
 		)
 		connection.put_data(__response_from_status(Status.BAD_REQUEST).to_utf8())
@@ -141,7 +141,7 @@ func __process_request(method: String, endpoint: String, params: Dictionary, hea
 	var endpoint_func: FuncRef = null
 	var endpoint_hash: Array = [type, endpoint]
 	if !__endpoints.has(endpoint_hash):
-		print(
+		Console.log(
 			"[WRN] Recieved request for unknown endpoint, method: %s, endpoint: %s" % [method, endpoint]
 		)
 		if __fallback:
@@ -154,11 +154,11 @@ func __process_request(method: String, endpoint: String, params: Dictionary, hea
 	var response: Response = Response.new()
 
 	if !endpoint_func.is_valid():
-		print(
+		Console.log(
 			"[ERR] FuncRef for endpoint not valid, method: %s, endpoint: %s" % [method, endpoint]
 		)
 	else:
-		print(
+		Console.log(
 			"[INF] Recieved request method: %s, endpoint: %s" % [method, endpoint]
 		)
 		endpoint_func.call_func(request, response)

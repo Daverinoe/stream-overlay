@@ -54,14 +54,14 @@ func json(): # Variant
 
 	var content_type = header("content-type")
 	if  content_type != "application/json":
-		print(
+		Console.log(
 			"[WRN] Attempting to call get_json on a request with content-type: %s" % [content_type]
 		)
 		return null
 
 	var result = JSON.parse(__body)
 	if result.error:
-		print(
+		Console.log(
 			"[ERR] Error parsing request json: %s" % [result.error_string]
 		)
 

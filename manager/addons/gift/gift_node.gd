@@ -112,9 +112,9 @@ func send(text : String, token : bool = false) -> void:
 	websocket.get_peer(1).put_packet(text.to_utf8())
 	if(OS.is_debug_build()):
 		if(!token):
-			print("< " + text.strip_edges(false))
+			Console.log("< " + text.strip_edges(false))
 		else:
-			print("< PASS oauth:******************************")
+			Console.log("< PASS oauth:******************************")
 
 # Sends a chat message to a channel. Defaults to the only connected channel.
 func chat(message : String, channel : String = ""):
@@ -140,7 +140,7 @@ func data_received() -> void:
 				var pair = tag.split("=")
 				tags[pair[0]] = pair[1]
 		if(OS.is_debug_build()):
-			print("> " + message)
+			Console.log("> " + message)
 		handle_message(message, tags)
 
 # Registers a command on an object with a func to call, similar to connect(signal, instance, func).

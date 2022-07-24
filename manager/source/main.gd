@@ -12,7 +12,7 @@ onready var __dialog_file_path: DialogFilePath = $dialog_file_path
 onready var __dialog_profile_name: DialogProfileName = $dialog_profile_name
 onready var __menu_file: PopupMenu = ($container_content/container_menu/file as MenuButton).get_popup()
 onready var __menu_profile: PopupMenu = ($container_content/container_menu/profile as MenuButton).get_popup()
-onready var __tab_command: TabCommand = $container_content/tabs_content/Command
+onready var __tab_command: TabCommand = $container_content/main_divider/tabs_content/Command
 
 var __data_application: DataApplication
 var __data_profile: DataProfile

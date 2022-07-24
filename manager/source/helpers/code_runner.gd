@@ -18,7 +18,7 @@ func compile(code: String) -> Reference:
 	formatted_code = formatted_code.replace("\n", "\n\t")
 	formatted_code = __function_template % formatted_code
 
-	print(formatted_code)
+	Console.log(formatted_code)
 
 	var script: GDScript = GDScript.new()
 	script.set_source_code(formatted_code)
@@ -29,7 +29,7 @@ func compile(code: String) -> Reference:
 
 	var error: int = thread.wait_to_finish()
 	if error != 0:
-		print("Couldn't load code!", error)
+		Console.log("Couldn't load code!", error)
 		return null
 
 	var reference: Reference = Reference.new()
