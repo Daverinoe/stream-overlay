@@ -28,7 +28,7 @@ func start(channel: String = "", token: String = "") -> bool:
 		channel = OS.get_environment("STREAM_MANAGER_CHANNEL")
 	
 	if !token:
-		token = OS.get_environment("STREAM_MANAGER_TOKEN")
+		token = Auth.user_token
 
 	__twitch.connect("chat_message", self, "__chat_message", [channel])
 

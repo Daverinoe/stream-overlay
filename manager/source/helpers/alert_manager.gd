@@ -49,7 +49,7 @@ func __start_server(port: int = 3080) -> void:
 	print("Starting server...")
 	__server = HTTPServer.new()
 	
-	__server.endpoint(HTTPServer.Method.POST, "/auth", funcref(self, "__handle_auth"))
+	__server.endpoint(HTTPServer.Method.GET, "/auth", funcref(self, "__handle_auth"))
 	__server.endpoint(HTTPServer.Method.POST, __endpoint_name, funcref(self, "__handle_event"))
 	
 	__server.listen(port)
@@ -71,7 +71,7 @@ func __handle_event(request: HTTPServer.Request, response: HTTPServer.Response) 
 	print(request)
 
 func __handle_auth(request: HTTPServer.Request, response: HTTPServer.Response) -> void:
-	print(request)
+	Auth.emit_signal("auth_granted", request.params())
 
 func restart() -> void:
 	pass

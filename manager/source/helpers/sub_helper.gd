@@ -6,7 +6,9 @@ class_name SubHelper
 ################################################
 
 enum {
-	CHANNEL_UPDATE = 0,
+	CHAT_READ = 0,
+	CHAT_EDIT,
+	CHANNEL_UPDATE,
 	CHANNEL_FOLLOW,
 	CHANNEL_SUBSCRIBE,
 	CHANNEL_SUBSCRIPTION_END,
@@ -16,6 +18,7 @@ enum {
 	CHANNEL_RAID,
 	CHANNEL_BAN,
 	CHANNEL_UNBAN,
+	CHANNEL_MODERATE,
 	CHANNEL_MODERATOR_ADD,
 	CHANEL_MODERATOR_REMOVED,
 	CHANNEL_POINTS_CUSTOM_REWARD_ADD,
@@ -50,6 +53,8 @@ enum {
 ################################################
 
 var scopes : Dictionary = {
+	"chat.read": "chat:read",
+	"chat.edit": "chat:edit",
 	"channel.subscribe": "channel:read:subscriptions",
 	"channel.subscription.end": "channel:read:subscriptions",
 	"channel.subscription.gift": "channel:read:subscriptions",
@@ -57,6 +62,7 @@ var scopes : Dictionary = {
 	"channel.cheer": "bits:read",
 	"channel.ban": "channel:moderate",
 	"channel.unban": "channel:moderate",
+	"channel.moderate": "channel:moderate",
 	"channel.moderator.add": "moderation:read",
 	"channel.moderator.remove": "moderation:read",
 	"channel.channel_points_custom_reward.add": "channel:manage:redemptions",
@@ -80,6 +86,8 @@ var scopes : Dictionary = {
 	}
 
 var subscriptions : Array = [
+	"chat.read",
+	"chat.edit",
 	"channel.update",
 	"channel.follow",
 	"channel.subscribe",
@@ -90,6 +98,7 @@ var subscriptions : Array = [
 	"channel.raid",
 	"channel.ban",
 	"channel.unban",
+	"channel.moderate",
 	"channel.moderator.add",
 	"channel.moderator.removed",
 	"channel.points_custom_reward.add",
@@ -120,6 +129,8 @@ var subscriptions : Array = [
 ]
 
 var __basic_scope : PoolStringArray = [
+	CHAT_READ,
+	CHAT_EDIT,
 	CHANNEL_UPDATE,
 	CHANNEL_FOLLOW, 
 	CHANNEL_SUBSCRIBE, 
@@ -127,6 +138,7 @@ var __basic_scope : PoolStringArray = [
 	CHANNEL_SUBSCRIPTION_MESSAGE, 
 	CHANNEL_CHEER, 
 	CHANNEL_RAID,
+	CHANNEL_MODERATE,
 	]
 
 
