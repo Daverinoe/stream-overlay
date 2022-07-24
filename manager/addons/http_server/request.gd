@@ -7,6 +7,7 @@ const Method = preload("res://addons/http_server/method.gd")
 
 var __body: String = ""
 var __endpoint: String = ""
+var __params: Dictionary = {}
 var __headers: Dictionary = {
 	# key: String, header name
 	# value: Variant, header value
@@ -17,9 +18,10 @@ var __type: int = Method.GET
 
 # Lifecyle methods
 
-func _init(type: int, endpoint: String, headers: Dictionary, body: String) -> void:
+func _init(type: int, endpoint: String, params: Dictionary, headers: Dictionary, body: String) -> void:
 	__body = body
 	__endpoint = endpoint
+	__params = params
 	__headers = headers
 	__type = type
 
@@ -32,6 +34,10 @@ func body() -> String:
 
 func endpoint() -> String:
 	return __endpoint
+
+
+func params() -> Dictionary:
+	return __params
 
 
 func header(name: String = "", default = null): # Variant

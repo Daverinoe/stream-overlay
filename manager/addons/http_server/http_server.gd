@@ -46,7 +46,7 @@ func process_connection() -> void:
 		)
 		return
 
-	var connection: StreamPeerTCP = .take_connection()
+	var connection: StreamPeerTCP = self.take_connection()
 
 	if connection:
 		__process_connection(connection)
@@ -79,8 +79,18 @@ func __process_connection(connection: StreamPeerTCP) -> void:
 	var request_line_parts = request_line.split(" ")
 
 	var method: String = request_line_parts[0]
-	var endpoint: String = request_line_parts[1]
-
+	var url: PoolStringArray = request_line_parts[1].split("?")
+	var endpoint: String = url[0]
+	var params_pool: PoolStringArray = (url[1] as String).percent_decode().split("&")
+	var params: Dictionary = {}
+	
+	for line in params_pool:
+		var temp = line.split("=")
+		if "+" in (temp[1] as String):
+			params[temp[0]] = temp[1].split("+")
+		else:
+			params[temp[0]] = temp[1]
+	
 	var headers: Dictionary = {}
 	var header_index: int = content_parts.find("")
 
@@ -103,7 +113,7 @@ func __process_connection(connection: StreamPeerTCP) -> void:
 		var body_parts: Array = content_parts.slice(header_index + 1, content_parts.size())
 		body = PoolStringArray(body_parts).join("\r\n")
 
-	var response: Response = __process_request(method, endpoint, headers, body)
+	var response: Response = __process_request(method, endpoint, params, headers, body)
 	connection.put_data(response.to_utf8())
 	if response.__file != null:
 		connection.put_data("\r\n".to_utf8())
@@ -117,12 +127,13 @@ func __process_connection(connection: StreamPeerTCP) -> void:
 	connection.disconnect_from_host()
 
 
-func __process_request(method: String, endpoint: String, headers: Dictionary, body: String) -> Response:
+func __process_request(method: String, endpoint: String, params: Dictionary, headers: Dictionary, body: String) -> Response:
 	var type: int = Method.description_to_type(method)
 
 	var request: Request = Request.new(
 		type,
 		endpoint,
+		params,
 		headers,
 		body
 	)
