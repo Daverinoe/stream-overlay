@@ -109,6 +109,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/gift/util/sender_data.gd"
 }, {
+"base": "HBoxContainer",
+"class": "Status",
+"language": "GDScript",
+"path": "res://source/components/status.gd"
+}, {
+"base": "Node",
+"class": "SubHelper",
+"language": "GDScript",
+"path": "res://source/helpers/sub_helper.gd"
+}, {
 "base": "Tabs",
 "class": "TabCommand",
 "language": "GDScript",
@@ -135,6 +145,8 @@ _global_script_class_icons={
 "Logger": "",
 "ProfileManager": "",
 "SenderData": "",
+"Status": "",
+"SubHelper": "",
 "TabCommand": ""
 }
 
@@ -149,6 +161,9 @@ config/icon="res://icon.png"
 Event="*res://source/autoloads/event.gd"
 DataLinker="*res://source/autoloads/data_linker.gd"
 ChatBot="*res://source/chat_bot/chat_bot.gd"
+AlertManager="*res://source/autoloads/alert_manager.gd"
+Auth="*res://source/autoloads/auth.gd"
+Console="*res://source/autoloads/console.gd"
 
 [debug]
 
@@ -190,12 +205,12 @@ ui_left={
 }
 redo={
 "deadzone": 0.5,
-"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":true,"control":false,"meta":true,"command":true,"pressed":false,"scancode":0,"physical_scancode":90,"unicode":0,"echo":false,"script":null)
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":true,"control":true,"meta":true,"command":true,"pressed":false,"scancode":0,"physical_scancode":90,"unicode":0,"echo":false,"script":null)
  ]
 }
 undo={
 "deadzone": 0.5,
-"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":true,"command":true,"pressed":false,"scancode":0,"physical_scancode":90,"unicode":0,"echo":false,"script":null)
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":true,"meta":true,"command":true,"pressed":false,"scancode":0,"physical_scancode":90,"unicode":0,"echo":false,"script":null)
  ]
 }
 

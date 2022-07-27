@@ -155,7 +155,7 @@ func http_request(path : String, type : int) -> PoolByteArray:
 			http_client.poll()
 			delay(100)
 		if (error != OK):
-			print("Could not connect to " + new_host + ". Images disabled.")
+			Console.log("Could not connect to " + new_host + ". Images disabled.")
 			active = false
 			return buffer
 		host = new_host
@@ -164,7 +164,7 @@ func http_request(path : String, type : int) -> PoolByteArray:
 		http_client.poll()
 		delay(50)
 	if !(http_client.get_status() == HTTPClient.STATUS_BODY or http_client.get_status() == HTTPClient.STATUS_CONNECTED):
-		print("Request failed. Skipped " + path + " (" + RequestType.keys()[type] + ")")
+		Console.log("Request failed. Skipped " + path + " (" + RequestType.keys()[type] + ")")
 		return buffer
 	while (http_client.get_status() == HTTPClient.STATUS_BODY):
 		http_client.poll()

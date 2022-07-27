@@ -26,6 +26,7 @@ extends Node
 
 var __server : HTTPServer = null
 var __endpoint_name : String = "/callback"
+var __websocket_server : WebSocketServer = null
 
 ################################################
 ################### ONREADY ####################

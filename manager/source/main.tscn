@@ -138,7 +138,6 @@ margin_right = 412.0
 margin_bottom = 635.0
 custom_styles/focus = SubResource( 6 )
 custom_styles/normal = SubResource( 7 )
-scroll_active = false
 scroll_following = true
 
 [node name="panel_footer" type="PanelContainer" parent="container_content"]

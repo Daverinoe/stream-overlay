@@ -81,7 +81,9 @@ func __process_connection(connection: StreamPeerTCP) -> void:
 	var method: String = request_line_parts[0]
 	var url: PoolStringArray = request_line_parts[1].split("?")
 	var endpoint: String = url[0]
-	var params_pool: PoolStringArray = (url[1] as String).percent_decode().split("&")
+	var params_pool: PoolStringArray = []
+	if url.size() > 1:
+		params_pool = (url[1] as String).percent_decode().split("&")
 	var params: Dictionary = {}
 	
 	for line in params_pool:
