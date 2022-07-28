@@ -47,15 +47,20 @@ func _process(delta: float) -> void:
 ################################################
 
 func __start_server(port: int = 3080) -> void:
-	Console.log("Starting server...")
+	Console.log("Starting REST server...")
 	__server = HTTPServer.new()
 	
 	__server.endpoint(HTTPServer.Method.GET, "/auth", funcref(self, "__handle_auth"))
 	__server.endpoint(HTTPServer.Method.POST, __endpoint_name, funcref(self, "__handle_event"))
 	
 	__server.listen(port)
-	Console.log("Server is listening on %s with endpoint %s: %s" % [port, __endpoint_name, __server.is_listening()] )
+	Console.log("REST server is listening on %s with endpoint %s: %s" % [port, __endpoint_name, __server.is_listening()] )
 	
+	Console.log("Starting websocket alert service...")
+	
+	__websocket_server = WebSocketServer.new()
+	
+	__websocket_server.listen(3081, PoolStringArray(), true)
 
 
 func __process_connections() -> void:

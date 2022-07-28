@@ -61,7 +61,8 @@ func _ready() -> void:
 	__get_ngrok_endpoint()
 	yield(self, "__ngrok_found")
 	__callback_endpoint = __ngrok_endpoint + __endpoint_name
-	Console.log("Alert server callback endpoint: %s" % __callback_endpoint)
+	var endpoint_len = __callback_endpoint.length()
+	Console.log("Alert server callback endpoint: %s" % __endpoint_name)
 	if __callback_endpoint != __endpoint_name:
 		__request_user_auth()
 		Console.log("User auth requested.")
@@ -100,7 +101,8 @@ func __get_ngrok_endpoint() -> void:
 		
 		var url = __http_response["tunnels"][0].public_url
 		__ngrok_endpoint = url.replace("http://", "https://")
-		Console.log("ngrok endpoint: %s" % __ngrok_endpoint)
+		var ngrok_len = __ngrok_endpoint.length()
+		Console.log("ngrok endpoint: %s***%s" % [__ngrok_endpoint.left(13), __ngrok_endpoint.right(ngrok_len-14)])
 		self.emit_signal("__ngrok_found", Status.SUCCESS)
 	else:
 		__get_ngrok_endpoint()
