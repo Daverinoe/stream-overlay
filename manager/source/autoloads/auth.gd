@@ -26,8 +26,8 @@ const check_string : String = "D4ver1noeSchm@ver!noe"
 ################################################
 
 var app_token : String
-var user_token : String
 var user_id : String
+var user_display_name : String
 var auth_file : UserTokens = null
 var ngrok_endpoint : String = ""
 var key
@@ -92,7 +92,6 @@ func _ready() -> void:
 			Console.log("Auth code set!")
 			
 			yield(self.__get_user_token(), "completed")
-			user_token = __user_token
 			
 			__save_auth_file()
 		else:
@@ -310,6 +309,7 @@ func __get_user_info() -> void:
 	body = JSON.parse(body).result["data"][0]
 	
 	user_id = body["id"]
+	user_display_name = body["display_name"]
 	Console.log("Welcome, %s" % body["display_name"])
 	
 	self.emit_signal("user_id_found")
@@ -369,7 +369,7 @@ func __load_auth_file() -> void:
 	__refresh_token = auth_file.refresh_token
 	yield(self.__check_token(__user_token), "completed")
 
-func check_status(body: Array, func_to_redo: FuncRef) -> void:
+func check_for_401(body: Array, func_to_redo: FuncRef) -> void:
 	if body[1] != 401:
 		pass
 	else:
@@ -380,7 +380,6 @@ func check_status(body: Array, func_to_redo: FuncRef) -> void:
 		Console.log("Auth code set!")
 		
 		yield(self.__get_user_token(), "completed")
-		user_token = __user_token
 		
 		# After user tokens are authed and ready, get the app token
 		yield(self.__get_app_token(), "completed")
@@ -389,3 +388,7 @@ func check_status(body: Array, func_to_redo: FuncRef) -> void:
 		__save_auth_file()
 	
 		func_to_redo.call_func()
+
+
+func user_token() -> String:
+	return __user_token

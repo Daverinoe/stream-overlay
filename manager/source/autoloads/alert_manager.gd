@@ -14,6 +14,10 @@ signal overlay_found(status)
 ################## CONSTANTS ###################
 ################################################
 const __TWITCH_SUBSCRIPTION_URI : String = "https://api.twitch.tv/helix/eventsub/subscriptions"
+const __HMAC_PREFIX : String = "sha256="
+const __TWITCH_MESSAGE_ID : String = 'Twitch-Eventsub-Message-Id'
+const __TWITCH_MESSAGE_TIMESTAMP : String = 'Twitch-Eventsub-Message-Timestamp'
+const __TWITCH_MESSAGE_SIGNATURE : String = 'Twitch-Eventsub-Message-Signature'
 
 ################################################
 ################### EXPORTS ####################
@@ -40,7 +44,7 @@ var __websocket_server : WebSocketServer = null
 ################################################
 
 func _ready() -> void:
-#	Auth.connect("user_id_found", self, "__subscribe_to_events")
+	Auth.connect("user_id_found", self, "__subscribe_to_events")
 	pass
 
 
@@ -58,7 +62,8 @@ func _process(delta: float) -> void:
 ############## PRIVATE METHODS #################
 ################################################
 
-func __start_server(port: int = 443) -> void:
+
+func __start_server(port: int = 3080) -> void:
 	Console.log("Starting REST server...")
 	__server = HTTPServer.new()
 	
@@ -72,11 +77,9 @@ func __start_server(port: int = 443) -> void:
 	
 	__websocket_server = WebSocketServer.new()
 	
-	__websocket_server.listen(3080, PoolStringArray(), true)
+	__websocket_server.listen(port, PoolStringArray(), true)
 	__websocket_server.connect("client_connected", self, "__overlay_connection", [true])
 	__websocket_server.connect("client_disconnected", self, "__overlay_connection", [false])
-	
-	__subscribe_to_events()
 
 
 func __process_connections() -> void:
@@ -97,7 +100,7 @@ func __subscribe_to_events() -> void:
 		"Content-Type: application/json",
 		]
 	
-	for sub in [subs_to_sub[0]]:
+	for sub in subs_to_sub:
 		var http_request : HTTPRequest = HTTPRequest.new()
 		self.add_child(http_request)
 		var key : String = ""
@@ -127,7 +130,7 @@ func __subscribe_to_events() -> void:
 		
 		http_request.request(__TWITCH_SUBSCRIPTION_URI, headers, true, post, body)
 
-		Console.log("Requesting subscription...")
+		Console.log("Requesting subscription to %s" % sub)
 		
 		var response = yield(http_request, "request_completed")
 		
@@ -135,13 +138,34 @@ func __subscribe_to_events() -> void:
 		response_body[-1] = "" # Remove unknown character at end of string -> maybe a weirdly parsed \n?
 		response_body = JSON.parse(body).result
 		var func_redo : FuncRef = funcref(self, "__subscribe_to_events")
-		Auth.check_status(response, func_redo)
 		
-		Console.log("Subscribed to: %s" % response_body.type)
+		Auth.check_for_401(response, func_redo)
+		
+		if response[1] == 409:
+			Console.log("Subscription to %s already exists!" % sub)
 
 
 func __handle_event(request: HTTPServer.Request, response: HTTPServer.Response) -> void:
-	Console.log(request)
+	
+	# Eventually do this, maybe. Ngrok random endpoints are pretty secure through obscurity.
+	
+#	var signature : bool = __calc_signature(request, Auth.check_string)
+#
+#	if !signature:
+#		Console.log("Invalid signature on request!")
+#		pass
+	
+	var request_body : Dictionary = JSON.parse(request.body()).result
+	
+	if request_body.has("challenge"):
+		Console.log("Responding to challenge for %s" % request_body.subscription.type)
+		
+		response.data(request_body.challenge)
+		
+		Console.log("Subscribed to: %s" % request_body.subscription.type)
+	else:
+		Console.log("Request received! Request type: %s" % request_body.subscription.type)
+		Console.log(request_body)
 
 
 func __handle_auth(request: HTTPServer.Request, response: HTTPServer.Response) -> void:
@@ -158,3 +182,21 @@ func __overlay_connection(connected : bool) -> void:
 		return
 	
 	self.emit_signal("overlay_found", true)
+
+
+#func __calc_signature(request: HTTPServer.Request, secret: String) -> bool:
+#	var headers : Dictionary = request.headers()
+#	var message_id = headers[__TWITCH_MESSAGE_ID.to_lower()]
+#	var message_timestamp = headers[__TWITCH_MESSAGE_TIMESTAMP.to_lower()]
+#	var message_signature = headers[__TWITCH_MESSAGE_SIGNATURE.to_lower()]
+#
+#	var calc_string : String = message_id + message_timestamp + request.body()
+#
+#	var check_string = __HMAC_PREFIX + HMACSHA256.hmac_base64(calc_string.to_ascii(), secret.to_ascii())
+#
+#	if check_string == message_signature:
+#		return true
+#
+#	return false
+
+

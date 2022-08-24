@@ -87,5 +87,9 @@ func __get_mime_type(path: String) -> String:
 			return "image/png"
 		"wasm":
 			return "application/wasm"
+		"json":
+			return "application/json"
+		"txt":
+			return "text"
 
 	return ""
