@@ -8,7 +8,8 @@ func _ready() -> void:
 		var type = child.name.replace("status_", "")
 		__status_object_dict[type] = child
 	
-	Auth.connect("__ngrok_found", self, "__change_status", ["ngrok"])
+	Auth.connect("ngrok_found", self, "__change_status", ["ngrok"])
+	AlertManager.connect("overlay_found", self, "__change_status", ["overlay"])
 
 
 func __change_status(status : bool, type : String) -> void:

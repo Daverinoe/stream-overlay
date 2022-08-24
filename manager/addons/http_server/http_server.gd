@@ -49,6 +49,8 @@ func process_connection() -> void:
 	var connection: StreamPeerTCP = self.take_connection()
 
 	if connection:
+#		var ssl_connection: StreamPeerSSL = StreamPeerSSL.new()
+#		ssl_connection.accept_stream(connection, Auth.key, Auth.cert)
 		__process_connection(connection)
 
 
@@ -64,12 +66,15 @@ func __process_connection(connection: StreamPeerTCP) -> void:
 
 		var data = connection.get_partial_data(bytes)
 		content.append_array(data[1])
+	
 
 	if content.empty():
 		return
-
+	
+	
 	var content_string: String = content.get_string_from_utf8()
 	var content_parts: Array = content_string.split("\r\n")
+	
 
 	if content_parts.empty():
 		connection.put_data(__response_from_status(Status.BAD_REQUEST).to_utf8())

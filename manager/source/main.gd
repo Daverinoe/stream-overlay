@@ -38,6 +38,7 @@ func _ready() -> void:
 
 	Event.connect("data_changed", self, "__data_changed")
 
+	__menu_file.connect("id_pressed", self, "__button_file_pressed")
 	__menu_profile.connect("id_pressed", self, "__button_profile_pressed")
 
 
@@ -48,6 +49,15 @@ func _exit_tree() -> void:
 
 
 # Private methods
+
+func __button_file_pressed(id: int) -> void:
+	var pressed = __menu_file.get_item_text(id).to_lower()
+	
+	match pressed:
+		'exit':
+			get_tree().quit()
+	
+
 
 func __button_profile_pressed(id: int) -> void:
 	var load_profile: DataProfile = null

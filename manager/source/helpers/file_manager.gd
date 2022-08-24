@@ -66,7 +66,7 @@ static func save_file(path: String, content: String, relative: bool = true) -> v
 
 
 static func save_json(path: String, content, relative: bool = true) -> void:
-	save_file(path, JSON.Console.log(content), relative)
+	save_file(path, JSON.print(content), relative)
 
 
 # Private methods

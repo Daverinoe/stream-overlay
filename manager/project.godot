@@ -123,6 +123,11 @@ _global_script_classes=[ {
 "class": "TabCommand",
 "language": "GDScript",
 "path": "res://source/tabs/tab_command.gd"
+}, {
+"base": "Resource",
+"class": "UserTokens",
+"language": "GDScript",
+"path": "res://source/helpers/user_tokens.gd"
 } ]
 _global_script_class_icons={
 "CodeRunner": "",
@@ -147,7 +152,8 @@ _global_script_class_icons={
 "SenderData": "",
 "Status": "",
 "SubHelper": "",
-"TabCommand": ""
+"TabCommand": "",
+"UserTokens": ""
 }
 
 [application]

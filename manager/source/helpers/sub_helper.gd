@@ -142,6 +142,18 @@ var __basic_scope : PoolStringArray = [
 	]
 
 
+var __basic_subs : PoolStringArray = [
+	CHANNEL_UPDATE,
+	CHANNEL_FOLLOW, 
+	CHANNEL_SUBSCRIBE, 
+	CHANNEL_SUBSCRIPTION_GIFT, 
+	CHANNEL_SUBSCRIPTION_MESSAGE, 
+	CHANNEL_CHEER, 
+	CHANNEL_RAID,
+	CHANNEL_MODERATE,
+	]
+
+
 func get_scope(scope_ints : PoolStringArray) -> Dictionary:
 	var sub_pool : PoolStringArray = []
 	var scope_string = ""
@@ -163,3 +175,8 @@ func get_scope(scope_ints : PoolStringArray) -> Dictionary:
 
 func get_basic_scope() -> Dictionary:
 	return get_scope(__basic_scope)
+
+func get_basic_subs() -> Dictionary:
+	var subs = __basic_subs.remove(__basic_subs.size() - 1)
+	var scope_subs = get_scope(__basic_subs)
+	return scope_subs["subscriptions"]

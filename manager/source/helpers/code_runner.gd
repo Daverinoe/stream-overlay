@@ -29,7 +29,7 @@ func compile(code: String) -> Reference:
 
 	var error: int = thread.wait_to_finish()
 	if error != 0:
-		Console.log("Couldn't load code!", error)
+		Console.log("Couldn't load code! %s" % error)
 		return null
 
 	var reference: Reference = Reference.new()
