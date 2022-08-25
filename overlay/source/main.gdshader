@@ -1,108 +1,51 @@
-shader_type canvas_item; 
+shader_type canvas_item;
 
-uniform float border_size = 10.0;
-uniform vec4 color_a: hint_color;
-uniform vec4 color_b: hint_color;
+uniform sampler2D NOISE;
+uniform float intermission;
 
+uniform float speedAdjustment = 8.0;
 
-bool in_rect(vec2 p, vec2 tl, vec2 br)
-{
-	return p.x >= tl.x && p.x <= br.x && p.y >= tl.y && p.y <= br.y;
+uniform float border = 25.0;
+
+vec4 Noise(vec2 x){
+	return texture(NOISE, (vec2(x)+0.5) /256.0, -100.0 );
 }
 
-
-bool is_border(vec2 p, vec2 s, sampler2D t)
-{
-	vec2 bsv = vec2(border_size * 2.0, border_size * 2.0);
+void fragment(){
+	vec2 borderv = vec2(border/1920.0, border/1080.0);
+	vec2 iResolution = 1.0 / SCREEN_PIXEL_SIZE;
 	
-	if (!in_rect(p, bsv, s - bsv))
-	{
-		return true;
-	}
-	
-	for (float y = -1.0; y <= 1.0; y += 1.0)
-	{
-		for (float x = -1.0; x <= 1.0; x += 1.0)
-		{
-			if ( x == y && x == 0.0)
-			{
-				continue;
-			}
-			
-			vec2 cp = p + vec2(x, y) * border_size; 
-			vec2 cpuv = cp / s;
-			vec4 cc = texture(t, cpuv);
-			
-			if (cc.a != 0.0)
-			{
-				return true;
-			}
-		}
-	}
-	
-	return false;
-}
+	if (UV.x < borderv.x || UV.x > 1.0 - borderv.x || UV.y < borderv.y || UV.y > 1.0 - borderv.y){
 		
+		vec3 ray;
+		ray.xy = 2.0 * (FRAGCOORD.xy - iResolution.xy * .5) / iResolution.x + vec2(cos(TIME / 20.0) * 2.0, sin(TIME / 20.0) * 2.0) * intermission;
+		ray.z = 1.0;
 
-
-vec4 blended_color(float val)
-{ 
-	vec4 delta = color_b - color_a;
-	return color_a + delta * clamp(val, 0.0, 1.0);
-}
-
-
-float fmod(float a, float b)
-{
-	return (a - b * floor(a / b));
-}
-
-
-vec2 texture_size(sampler2D tex)
-{
-	ivec2 size = textureSize(tex, 0);
-	return vec2(
-		float(size.x),
-		float(size.y)
-	);
-}
-
-
-float wave(vec2 position, vec2 direction, float speed, float frequency)
-{
-	vec2 offset_position = position + direction * TIME * speed;
-	return offset_position.y / frequency + sin(offset_position.x / frequency);
-}
-
-
-vec4 color(vec2 position)
-{
-	float val = 0.0; 
-	
-	val += wave(position, vec2(-1.0, 1.0), 50.0, 100.0);
-	val += wave(position, vec2(-1.0, 0.0), 25.0, 50.0);
-	val += wave(position, vec2(0.5, -1.0), 10.0, 250.0);
-	val += wave(position, vec2(1.0, 0.0), 50.0, 150.0);
-	val += wave(position, vec2(1.0, 0.0), 50.0, 150.0);
-	val += wave(position, vec2(1.0, 0.0), 50.0, 150.0);
-	
-	float m = 10.0;
-	val = fmod(val, m) / m;
-	
-	return blended_color(val); 
-}
-
-
-void fragment() 
-{
-	vec4 c = texture(TEXTURE, UV);
-	vec2 s = vec2(1920.0, 1080.0);
-	vec2 p = UV * s;
-	
-	if (c.a == 0.0 && is_border(p, s, TEXTURE))
-	{
-		c = color(p);
+		float offset = TIME / speedAdjustment;
+		float speed2 = (cos(offset) + 1.0) * 2.0;
+		float speed = speed2 + 0.1;
+	//	offset += sin(offset) * 0.96;
+		offset *= 2.0;
+		
+		
+		vec3 col = vec3(0);
+		
+		vec3 stp = ray / max(abs(ray.x),abs(ray.y));
+		
+		vec3 pos = 2.0 * stp + 0.5;
+		for ( int i=0; i < 20; i++ )
+		{
+			float z = float(Noise(vec2(pos.xy)).x);
+			z = fract(z - offset);
+			float d = 50.0 * z - pos.z;
+			float w = pow(max(0.0, 1.0 - 8.0 * length(fract(pos.xy) - 0.5)), 2.0);
+			vec3 c = max(vec3(0), vec3(1.0 - abs(d + speed2 * .5) / speed, 1.0 - abs(d) / speed, 1.0 - abs(d - speed2 * 0.5) / speed));
+			col += 1.5 * (1.0 - z) * c * w;
+			pos += stp;
+		}
+		
+		COLOR = vec4(col, 1.0);
+	} else {
+		COLOR = vec4(0.0);
 	}
-	
-	COLOR = c;
 }
