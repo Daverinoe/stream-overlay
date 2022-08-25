@@ -13,6 +13,7 @@ var __alerts: Array = []
 # Lifecycle methods
 
 func _ready() -> void:
+	Event.connect("alert", self, "__handle_alert")
 	get_tree().get_root().set_transparent_background(true)
 
 	var timer: Timer = Timer.new()
@@ -65,3 +66,11 @@ func __alert(user: String, type: String) -> void:
 	__alerts.remove(index)
 
 	remove_child(instance)
+
+
+func __handle_alert(payload: Dictionary) -> void:
+	
+	var name = payload.name
+	var type = payload.type
+	
+	__alert(name, type)

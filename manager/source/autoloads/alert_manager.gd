@@ -33,7 +33,8 @@ const __TWITCH_MESSAGE_SIGNATURE : String = 'Twitch-Eventsub-Message-Signature'
 
 var __server : HTTPServer = null
 var __endpoint_name : String = "/callback"
-var __websocket_server : WebSocketServer = null
+var __enet_server : NetworkedMultiplayerENet = NetworkedMultiplayerENet.new()
+var __enet_listening : int = false
 
 ################################################
 ################### ONREADY ####################
@@ -62,6 +63,10 @@ func _process(delta: float) -> void:
 ############## PRIVATE METHODS #################
 ################################################
 
+func _init() -> void:
+	__enet_server.connect("peer_connected", self, "__overlay_connection", [true])
+	__enet_server.connect("peer_disconnected", self, "__overlay_connection", [false])
+
 
 func __start_server(port: int = 3080) -> void:
 	Console.log("Starting REST server...")
@@ -73,21 +78,19 @@ func __start_server(port: int = 3080) -> void:
 	__server.listen(port)
 	Console.log("REST server is listening on %s with endpoint %s: %s" % [port, __endpoint_name, __server.is_listening()] )
 	
-	Console.log("Starting websocket alert service...")
+	Console.log("Starting Enet server on port 8000...")
+		
+	__enet_listening = __enet_server.create_server(8000)
 	
-	__websocket_server = WebSocketServer.new()
+	get_tree().network_peer = __enet_server
 	
-	__websocket_server.listen(port, PoolStringArray(), true)
-	__websocket_server.connect("client_connected", self, "__overlay_connection", [true])
-	__websocket_server.connect("client_disconnected", self, "__overlay_connection", [false])
+	if __enet_listening == OK:
+		Console.log("Server created! Listening on 8000...")
 
 
 func __process_connections() -> void:
-	if __server == null:
-		return
-	
-	__server.process_connection()
-#	__websocket_server.poll()
+	if __server != null:
+		__server.process_connection()
 
 
 func __subscribe_to_events() -> void:
@@ -165,7 +168,8 @@ func __handle_event(request: HTTPServer.Request, response: HTTPServer.Response) 
 		Console.log("Subscribed to: %s" % request_body.subscription.type)
 	else:
 		Console.log("Request received! Request type: %s" % request_body.subscription.type)
-		Console.log(request_body)
+		Console.log("Sending request to overlay...")
+		rpc("handle_alert", request_body)
 
 
 func __handle_auth(request: HTTPServer.Request, response: HTTPServer.Response) -> void:
@@ -176,27 +180,17 @@ func restart() -> void:
 	pass
 
 
-func __overlay_connection(connected : bool) -> void:
+func __overlay_connection(id: int, connected : bool) -> void:
+	Console.log("Overlay connection received!")
 	if !connected:
-		self.emit_signal("overlay_found", false)
+		Console.log("Overlay connection failed.")
+		self.emit_signal("overlay_found", Status.ERROR)
 		return
 	
-	self.emit_signal("overlay_found", true)
+	Console.log("Overlay connection success.")
+	self.emit_signal("overlay_found", Status.SUCCESS)
 
 
-#func __calc_signature(request: HTTPServer.Request, secret: String) -> bool:
-#	var headers : Dictionary = request.headers()
-#	var message_id = headers[__TWITCH_MESSAGE_ID.to_lower()]
-#	var message_timestamp = headers[__TWITCH_MESSAGE_TIMESTAMP.to_lower()]
-#	var message_signature = headers[__TWITCH_MESSAGE_SIGNATURE.to_lower()]
-#
-#	var calc_string : String = message_id + message_timestamp + request.body()
-#
-#	var check_string = __HMAC_PREFIX + HMACSHA256.hmac_base64(calc_string.to_ascii(), secret.to_ascii())
-#
-#	if check_string == message_signature:
-#		return true
-#
-#	return false
-
-
+remote func handle_alert(payload) -> void:
+	emit_signal("alert", payload)
+	print(payload)

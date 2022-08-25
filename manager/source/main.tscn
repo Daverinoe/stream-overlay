@@ -157,19 +157,20 @@ alignment = 2
 script = ExtResource( 10 )
 
 [node name="status_ngrok" parent="container_content/panel_footer/_" instance=ExtResource( 2 )]
-margin_left = 1000.0
-margin_right = 1080.0
+margin_left = 1090.0
+margin_right = 1170.0
 margin_bottom = 26.0
 text = "ngrok"
 
 [node name="status_overlay" parent="container_content/panel_footer/_" instance=ExtResource( 2 )]
-margin_left = 1090.0
-margin_right = 1170.0
+margin_left = 1180.0
+margin_right = 1260.0
 margin_bottom = 26.0
 state = 1
 text = "overlay"
 
 [node name="status_plugin" parent="container_content/panel_footer/_" instance=ExtResource( 2 )]
+visible = false
 margin_left = 1180.0
 margin_right = 1260.0
 margin_bottom = 26.0

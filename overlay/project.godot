@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "Alert",
 "language": "GDScript",
 "path": "res://source/alert.gd"
+}, {
+"base": "Node",
+"class": "SubHelper",
+"language": "GDScript",
+"path": "res://source/helpers/sub_helper.gd"
 } ]
 _global_script_class_icons={
-"Alert": ""
+"Alert": "",
+"SubHelper": ""
 }
 
 [application]
@@ -27,6 +33,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Event="*res://source/event.gd"
+AlertManager="*res://source/autoloads/alert_manager.gd"
 
 [display]
 

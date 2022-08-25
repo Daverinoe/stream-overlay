@@ -12,6 +12,7 @@ const __DURATION: float = 4.0
 const __TYPE_CONVERSION = {
 	"follow": "followed",
 	"subscribe": "subscribed",
+	"raid": "raided",
 }
 
 
