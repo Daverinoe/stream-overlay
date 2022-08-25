@@ -10,7 +10,7 @@ data_*/
 
 # Build ignores
 build/*
-./Exports/*
+Exports/*
 
 
 # Stream plugins ignore
