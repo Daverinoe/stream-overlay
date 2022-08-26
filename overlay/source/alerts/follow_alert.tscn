@@ -1,0 +1,52 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://source/assets/fonts/lifecraft.tres" type="DynamicFont" id=1]
+[ext_resource path="res://source/alerts/follow_alert.gd" type="Script" id=2]
+[ext_resource path="res://source/assets/materials/alert_burn_material.tres" type="Material" id=3]
+
+[sub_resource type="Theme" id=1]
+default_font = ExtResource( 1 )
+Label/colors/font_color = Color( 0.698039, 0.541176, 0, 1 )
+Label/colors/font_color_shadow = Color( 0, 0, 0, 1 )
+RichTextLabel/colors/default_color = Color( 0.698039, 0.541176, 0, 1 )
+RichTextLabel/colors/font_color_shadow = Color( 0, 0, 0, 1 )
+
+[sub_resource type="ViewportTexture" id=2]
+viewport_path = NodePath("Viewport")
+
+[node name="follow_alert" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+
+[node name="Viewport" type="Viewport" parent="."]
+size = Vector2( 1920, 1080 )
+transparent_bg = true
+render_target_v_flip = true
+
+[node name="Control" type="Control" parent="Viewport"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="label" type="RichTextLabel" parent="Viewport/Control"]
+anchor_top = 0.123
+anchor_bottom = 0.141
+rect_min_size = Vector2( 1920, 100 )
+rect_pivot_offset = Vector2( 150, 0 )
+theme = SubResource( 1 )
+bbcode_enabled = true
+bbcode_text = "[center] [ TEST ]"
+text = " [ TEST ]"
+fit_content_height = true
+scroll_active = false
+
+[node name="viewport_texture" type="TextureRect" parent="."]
+material = ExtResource( 3 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource( 2 )
+
+[node name="alert_sound" type="AudioStreamPlayer" parent="."]
+volume_db = -80.0

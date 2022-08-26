@@ -2,12 +2,13 @@ extends Control
 
 # Const variables
 
-const ALERT_REFERENCE = preload("res://source/alert.tscn")
+const FOLLOW_ALERT = preload("res://source/alerts/follow_alert.tscn")
 
 
 # Private variables
 
 var __alerts: Array = []
+var __alert_playing: bool = false
 
 
 # Lifecycle methods
@@ -45,27 +46,28 @@ func _ready() -> void:
 	remove_child(timer)
 
 
+func _process(delta) -> void:
+	__check_alerts()
+
+
 # Private methods
 
 func __alert(user: String, type: String) -> void:
-	var instance: Alert = ALERT_REFERENCE.instance()
-	instance.position = Vector2(-300.0, 80.0)
-	instance.user = user
-	instance.type = type
+	var instance
+	match type:
+		"follow":
+			instance = FOLLOW_ALERT.instance()
+		_:
+			pass
+	
+	if instance != null:
 
-	add_child(instance)
+		instance.user = user
 
-	for alert in __alerts:
-		alert.move_down()
+		__alerts.append(instance)
 
-	__alerts.append(instance)
-
-	yield(instance, "complete")
-
-	var index: int = __alerts.find(instance)
-	__alerts.remove(index)
-
-	remove_child(instance)
+	else:
+		pass
 
 
 func __handle_alert(payload: Dictionary) -> void:
@@ -74,3 +76,24 @@ func __handle_alert(payload: Dictionary) -> void:
 	var type = payload.type
 	
 	__alert(name, type)
+
+
+func __check_alerts() -> void:
+	if __alerts.size() > 0:
+		if !__alert_playing:
+			
+			__alert_playing = true
+			
+			add_child(__alerts[0])
+			
+			yield(__alerts[0], "complete")
+			
+			remove_child(__alerts[0])
+			
+			__alerts.pop_front()
+			
+			__alert_playing = false
+		else:
+			pass
+	else:
+		pass

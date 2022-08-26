@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+
+[ext_resource path="res://source/assets/materials/alert_burn_shader.tres" type="Shader" id=1]
+
+[sub_resource type="OpenSimplexNoise" id=5]
+period = 15.0
+persistence = 0.15
+lacunarity = 3.0
+
+[sub_resource type="NoiseTexture" id=6]
+seamless = true
+noise = SubResource( 5 )
+
+[resource]
+shader = ExtResource( 1 )
+shader_param/burn_color = Color( 1, 0.584314, 0, 1 )
+shader_param/text_color = Color( 0.698039, 0.541176, 0, 1 )
+shader_param/burn_size = 0.186
+shader_param/dissolve_amount = 1.0
+shader_param/emission_amount = 1.0
+shader_param/search_length = 14.238
+shader_param/threshold = 0.387
+shader_param/dissolve_texture = SubResource( 6 )

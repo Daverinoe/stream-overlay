@@ -1,0 +1,110 @@
+[gd_resource type="Shader" format=2]
+
+[resource]
+code = "shader_type canvas_item;
+
+uniform sampler2D dissolve_texture;
+uniform vec4 burn_color : hint_color = vec4(1);
+uniform vec4 text_color : hint_color = vec4(1);
+uniform float burn_size : hint_range(0, 2);
+uniform float dissolve_amount : hint_range(0, 1);
+uniform float emission_amount;
+uniform float search_length : hint_range(0, 150) = 50.0;
+uniform float threshold : hint_range(0, 1.0) = 0.2;
+
+
+mat4 findCentralPoint(sampler2D tex, vec2 uv, vec2 TPS){
+	bool topFound = false;
+	bool bottomFound = false;
+	bool leftFound = false;
+	bool rightFound = false;
+	vec2 topPos;
+	vec2 bottPos;
+	vec2 leftPos;
+	vec2 rightPos;
+	vec4 checkLeft;
+	vec4 checkRight;
+	vec4 checkBottom;
+	vec4 checkTop;
+	
+	for (float searchIndex = 0.0; searchIndex <= search_length; searchIndex++) {
+		float check_hor = searchIndex * TPS.x;
+		float check_ver = searchIndex * TPS.y;
+		if (!leftFound){
+			checkLeft = texture(tex, vec2(uv.x - check_hor, uv.y));
+			if (checkLeft.a <= 0.9 || (checkLeft.r <= threshold && checkLeft.b <= threshold && checkLeft.g <= threshold)){
+				leftPos = vec2(uv.x - check_hor, uv.y);
+				leftFound = true;
+			}
+		}
+		if (!rightFound){
+			checkRight = texture(tex, vec2(uv.x + check_hor, uv.y));
+			if (checkRight.a <= 0.9 || (checkRight.r <= threshold && checkRight.b <= threshold && checkRight.g <= threshold)){
+				rightPos = vec2(uv.x + check_hor, uv.y);
+				rightFound = true;
+			}
+		}
+		if (!bottomFound){
+			checkBottom = texture(tex, vec2(uv.x, uv.y - check_ver));
+			if (checkBottom.a <= 0.9 || (checkBottom.r <= threshold && checkBottom.b <= threshold && checkBottom.g <= threshold)){
+				bottPos = vec2(uv.x, uv.y - check_ver);
+				bottomFound = true;
+			}
+		}
+		if (!topFound){
+			checkTop = texture(tex, vec2(uv.x, uv.y + check_ver));
+			if (checkTop.a <= 0.9 || (checkTop.r <= threshold && checkTop.b <= threshold && checkTop.g <= threshold)){
+				topPos = vec2(uv.x, uv.y + check_ver);
+				topFound = true;
+			}
+		}
+		
+		if (topFound && bottomFound && leftFound && rightFound){
+			break;
+		}
+	}
+	
+	vec2 centralPoint = (topPos + bottPos + leftPos + rightPos) / 4.0;
+	vec4 shortLengths = vec4(rightPos.x - centralPoint.x, centralPoint.x - leftPos.x, topPos.y - centralPoint.y, centralPoint.y - bottPos.y);
+	return mat4(vec4(centralPoint, vec2(0.0)), shortLengths, vec4(0.0), vec4(0.0));
+}
+
+void fragment() {
+	vec4 out_color = texture(TEXTURE, UV);
+	
+	COLOR = text_color;
+	
+	if (out_color.a != 0.0 && out_color.rgb != vec3(0.0)){
+		mat4 centralOutput = findCentralPoint(TEXTURE, UV, TEXTURE_PIXEL_SIZE);
+		vec2 centralPoint = centralOutput[0].xy;
+		float leftLength = centralOutput[1].x;
+		float rightLength = centralOutput[1].y;
+		float bottomLength = centralOutput[1].z;
+		float topLength = centralOutput[1].w; //out_color.rgb += vec3(0.3);
+		
+		if (topLength > bottomLength){
+//			out_color.rgb += vec3(0.3);
+		} else if (bottomLength > topLength){
+//			out_color.rgb -= vec3(0.1);
+		}
+		
+		if (leftLength > rightLength){
+			out_color.rgb += vec3(0.3);
+		} else if (rightLength > leftLength){
+			out_color.rgb -= vec3(0.1);
+		}
+		
+//		if (leftLength == rightLength && topLength ==  bottomLength){
+//			out_color.rgb += vec3(0.5);
+//		}
+	}
+	
+	float sample = texture(dissolve_texture, UV).r;
+	float emission_value = 1.0 - smoothstep(dissolve_amount, dissolve_amount + burn_size, sample);
+	vec3 emission = burn_color.rgb * emission_value * emission_amount;
+
+	COLOR.a = min(smoothstep(dissolve_amount - burn_size, dissolve_amount, sample) * out_color.a, out_color.a);
+//
+	COLOR.rgb = max(out_color.rgb, emission);
+	
+}"

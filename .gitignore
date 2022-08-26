@@ -12,8 +12,10 @@ data_*/
 build/*
 Exports/*
 
-
 # Stream plugins ignore
 */addons/godot_reset/*
 */addons/ridiculous_coding/*
 */addons/velopbot/*
+
+# Copyright files ignore
+overlay/source/assets/audio/*

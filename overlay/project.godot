@@ -9,10 +9,10 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node2D",
+"base": "Control",
 "class": "Alert",
 "language": "GDScript",
-"path": "res://source/alert.gd"
+"path": "res://source/alerts/follow_alert.gd"
 }, {
 "base": "Node",
 "class": "SubHelper",
@@ -34,6 +34,7 @@ config/icon="res://icon.png"
 
 Event="*res://source/event.gd"
 AlertManager="*res://source/autoloads/alert_manager.gd"
+FileManager="*res://source/autoloads/file_manager.gd"
 
 [display]
 
