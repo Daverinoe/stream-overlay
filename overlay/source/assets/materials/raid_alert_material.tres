@@ -1,0 +1,57 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item; 
+
+uniform sampler2D noise;
+
+uniform vec4 color_base: hint_color;
+
+uniform vec4 color_border: hint_color;
+uniform float border_size: hint_range(0.0, 0.1);
+
+uniform float direction: hint_range(-1.0, 1.0) = -1.0;
+
+uniform float edge_size: hint_range( 0.0, 0.2);
+
+
+void fragment() 
+{
+	vec4 color = color_base;
+	
+	vec2 uv = mod(vec2(UV.x * 0.25 + TIME * direction, 0.0), 1.0); 
+	uv.y = UV.y;
+	float noise_value = texture(noise, uv).r; 
+	
+	if (noise_value > 0.65) 
+	{
+		color = mix(vec4(1.0), color_base, 0.4);
+	} 
+	
+	if (UV.y < border_size || UV.y > 1.0 - border_size) 
+	{
+		color = color_border;
+	}
+	
+	float edge_offset = ((sin(uv.y * 10.0 + TIME * 10.0) + 1.0) / 2.0) * edge_size;
+	if (UV.x + edge_offset <  edge_size || UV.x - edge_offset > 1.0 - edge_size) 
+	{
+		color = vec4(0.0);
+	}
+	
+	COLOR = color;
+}"
+
+[sub_resource type="OpenSimplexNoise" id=1]
+
+[sub_resource type="NoiseTexture" id=2]
+noise = SubResource( 1 )
+
+[resource]
+shader = SubResource( 3 )
+shader_param/color_base = Color( 0, 0.00392157, 1, 1 )
+shader_param/color_border = Color( 0.552941, 0.545098, 1, 1 )
+shader_param/border_size = 0.1
+shader_param/direction = 1.0
+shader_param/edge_size = 0.046
+shader_param/noise = SubResource( 2 )

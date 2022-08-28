@@ -1,0 +1,108 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://source/assets/materials/raid_alert_material.tres" type="Material" id=1]
+[ext_resource path="res://source/assets/my_pics/emote_huh.png" type="Texture" id=2]
+[ext_resource path="res://source/alerts/raid_alert.gd" type="Script" id=3]
+[ext_resource path="res://source/assets/themes/raid_theme.tres" type="Theme" id=4]
+[ext_resource path="res://source/assets/fonts/LifeCraft_Font.ttf" type="DynamicFontData" id=5]
+
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item; 
+
+uniform sampler2D noise;
+
+uniform vec4 color_base: hint_color;
+
+uniform vec4 color_border: hint_color;
+uniform float border_size: hint_range(0.0, 0.1);
+
+uniform float direction: hint_range(-1.0, 1.0) = -1.0;
+
+uniform float edge_size: hint_range( 0.0, 0.2);
+
+
+void fragment() 
+{
+	vec4 color = color_base;
+	
+	vec2 uv = mod(vec2(UV.x * 0.25 + TIME * direction, 0.0), 1.0); 
+	uv.y = UV.y;
+	float noise_value = texture(noise, uv).r; 
+	
+	if (noise_value > 0.65) 
+	{
+		color = mix(vec4(1.0), color_base, 0.4);
+	} 
+	
+	if (UV.y < border_size || UV.y > 1.0 - border_size) 
+	{
+		color = color_border;
+	}
+	
+	float edge_offset = ((sin(uv.y * 10.0 + TIME * 10.0) + 1.0) / 2.0) * edge_size;
+	if (UV.x + edge_offset <  edge_size || UV.x - edge_offset > 1.0 - edge_size) 
+	{
+		color = vec4(0.0);
+	}
+	
+	COLOR = color;
+}"
+
+[sub_resource type="OpenSimplexNoise" id=1]
+
+[sub_resource type="NoiseTexture" id=2]
+noise = SubResource( 1 )
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 3 )
+shader_param/color_base = Color( 1, 0, 0, 1 )
+shader_param/color_border = Color( 1, 0.545098, 0.545098, 1 )
+shader_param/border_size = 0.1
+shader_param/direction = -1.0
+shader_param/edge_size = 0.046
+shader_param/noise = SubResource( 2 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 200
+font_data = ExtResource( 5 )
+
+[node name="raid_alert" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="streamer_background" type="ColorRect" parent="."]
+material = ExtResource( 1 )
+margin_left = -1480.0
+margin_top = 69.0
+margin_right = -212.8
+margin_bottom = 285.0
+
+[node name="Sprite" type="Sprite" parent="streamer_background"]
+position = Vector2( 895, 106.671 )
+texture = ExtResource( 2 )
+
+[node name="raider_background" type="ColorRect" parent="."]
+material = SubResource( 4 )
+margin_left = 2020.0
+margin_top = 739.0
+margin_right = 3287.2
+margin_bottom = 955.0
+
+[node name="Sprite" type="Sprite" parent="raider_background"]
+position = Vector2( 332.053, 108.643 )
+texture = ExtResource( 2 )
+
+[node name="vs_label" type="RichTextLabel" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 848.0
+margin_top = 1280.0
+margin_right = 1079.0
+margin_bottom = 1481.0
+theme = ExtResource( 4 )
+custom_fonts/normal_font = SubResource( 5 )
+bbcode_enabled = true
+bbcode_text = "[center][shake rate=25 level=10]VS[/shake]"
+text = "VS"
+fit_content_height = true

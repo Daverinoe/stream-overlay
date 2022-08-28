@@ -1,15 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://source/assets/fonts/lifecraft.tres" type="DynamicFont" id=1]
+[ext_resource path="res://source/assets/themes/text_theme.tres" type="Theme" id=1]
 [ext_resource path="res://source/alerts/follow_alert.gd" type="Script" id=2]
 [ext_resource path="res://source/assets/materials/alert_burn_material.tres" type="Material" id=3]
-
-[sub_resource type="Theme" id=1]
-default_font = ExtResource( 1 )
-Label/colors/font_color = Color( 0.698039, 0.541176, 0, 1 )
-Label/colors/font_color_shadow = Color( 0, 0, 0, 1 )
-RichTextLabel/colors/default_color = Color( 0.698039, 0.541176, 0, 1 )
-RichTextLabel/colors/font_color_shadow = Color( 0, 0, 0, 1 )
 
 [sub_resource type="ViewportTexture" id=2]
 viewport_path = NodePath("Viewport")
@@ -35,7 +28,7 @@ anchor_top = 0.123
 anchor_bottom = 0.141
 rect_min_size = Vector2( 1920, 100 )
 rect_pivot_offset = Vector2( 150, 0 )
-theme = SubResource( 1 )
+theme = ExtResource( 1 )
 bbcode_enabled = true
 bbcode_text = "[center] [ TEST ]"
 text = " [ TEST ]"

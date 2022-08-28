@@ -3,6 +3,7 @@ extends Control
 # Const variables
 
 const FOLLOW_ALERT = preload("res://source/alerts/follow_alert.tscn")
+const RAID_ALERT = preload("res://source/alerts/raid_alert.tscn")
 
 
 # Private variables
@@ -52,11 +53,14 @@ func _process(delta) -> void:
 
 # Private methods
 
-func __alert(user: String, type: String) -> void:
+func __alert(user: String, type: String, user_avatar = null) -> void:
 	var instance
 	match type:
 		"follow":
 			instance = FOLLOW_ALERT.instance()
+		"raid":
+			instance = RAID_ALERT.instance()
+			instance.raider_image = user_avatar
 		_:
 			pass
 	
@@ -74,8 +78,9 @@ func __handle_alert(payload: Dictionary) -> void:
 	
 	var name = payload.name
 	var type = payload.type
+	var raider_avatar = payload.user_avatar
 	
-	__alert(name, type)
+	__alert(name, type, raider_avatar)
 
 
 func __check_alerts() -> void:

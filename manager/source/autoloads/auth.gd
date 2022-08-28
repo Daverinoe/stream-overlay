@@ -133,6 +133,8 @@ func __get_ngrok_endpoint() -> void:
 		self.emit_signal("ngrok_found", Status.SUCCESS)
 	else:
 		__get_ngrok_endpoint()
+	
+	self.remove_child(__http_request)
 
 
 func __request_user_auth() -> void:
@@ -206,6 +208,7 @@ func __get_app_token() -> void:
 	
 	Console.log("Checking app token validity")
 	__check_token(__app_token)
+	self.remove_child(__http_request)
 
 
 func __get_user_token() -> void:
@@ -245,6 +248,7 @@ func __get_user_token() -> void:
 	
 	Console.log("Checking user token validity")
 	__check_token(__user_token)
+	self.remove_child(__http_request)
 
 
 func __check_token(token : String) -> void:
@@ -272,6 +276,8 @@ func __check_token(token : String) -> void:
 				__refresh_token()
 	else:
 		Console.log("Token valid!")
+	
+	self.remove_child(__http_request)
 
 
 func __parse_body(response) -> Dictionary:
@@ -313,6 +319,7 @@ func __get_user_info() -> void:
 	Console.log("Welcome, %s" % body["display_name"])
 	
 	self.emit_signal("user_id_found")
+	self.remove_child(__http_request)
 
 
 func __refresh_token() -> void:
@@ -354,6 +361,7 @@ func __refresh_token() -> void:
 	
 	Console.log("Checking user token validity")
 	__check_token(__user_token)
+	self.remove_child(__http_request)
 
 
 func __save_auth_file() -> void:

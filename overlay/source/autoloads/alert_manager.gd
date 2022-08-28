@@ -49,10 +49,10 @@ func _ready() -> void:
 ################################################
 
 remote func handle_alert(payload) -> void:
-	print(payload)
 	
 	var type = payload.subscription.type
 	var subtype
+	var user_avatar
 	var name
 	
 	match type:
@@ -62,9 +62,10 @@ remote func handle_alert(payload) -> void:
 		"channel.raid":
 			subtype = "raid"
 			name = payload.event.from_broadcaster_user_name
+			user_avatar = payload.user_texture
 	
 	
-	Event.emit_signal("alert", {"name": name, "type": subtype})
+	Event.emit_signal("alert", {"name": name, "type": subtype, "user_avatar": user_avatar})
 
 
 ################################################

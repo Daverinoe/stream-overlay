@@ -14,6 +14,7 @@ signal overlay_found(status)
 ################## CONSTANTS ###################
 ################################################
 const __TWITCH_SUBSCRIPTION_URI : String = "https://api.twitch.tv/helix/eventsub/subscriptions"
+const __TWITCH_USER_URI : String = "https://api.twitch.tv/helix/users?id="
 const __HMAC_PREFIX : String = "sha256="
 const __TWITCH_MESSAGE_ID : String = 'Twitch-Eventsub-Message-Id'
 const __TWITCH_MESSAGE_TIMESTAMP : String = 'Twitch-Eventsub-Message-Timestamp'
@@ -144,8 +145,12 @@ func __subscribe_to_events() -> void:
 		
 		Auth.check_for_401(response, func_redo)
 		
+		Console.log("Received %s for %s request." % [response[1], sub])
+		
 		if response[1] == 409:
 			Console.log("Subscription to %s already exists!" % sub)
+		
+		remove_child(http_request)
 
 
 func __handle_event(request: HTTPServer.Request, response: HTTPServer.Response) -> void:
@@ -159,16 +164,21 @@ func __handle_event(request: HTTPServer.Request, response: HTTPServer.Response) 
 #		pass
 	
 	var request_body : Dictionary = JSON.parse(request.body()).result
+	var request_type : String = request_body.subscription.type
+	var raider_texture = null
 	
 	if request_body.has("challenge"):
-		Console.log("Responding to challenge for %s" % request_body.subscription.type)
+		Console.log("Responding to challenge for %s" % request_type)
 		
 		response.data(request_body.challenge)
 		
-		Console.log("Subscribed to: %s" % request_body.subscription.type)
+		Console.log("Subscribed to: %s" % request_type)
 	else:
-		Console.log("Request received! Request type: %s" % request_body.subscription.type)
+		Console.log("Request received! Request type: %s" % request_type)
 		Console.log("Sending request to overlay...")
+		if request_type == "channel.raid":
+			var raider_id = request_body.event.from_broadcaster_user_id
+			request_body.user_texture = yield(__get_user_texture(raider_id), "completed")
 		rpc("handle_alert", request_body)
 
 
@@ -193,4 +203,56 @@ func __overlay_connection(id: int, connected : bool) -> void:
 
 remote func handle_alert(payload) -> void:
 	emit_signal("alert", payload)
-	print(payload)
+	Console.log("Payload sent")
+
+
+func __get_user_texture(user_id: String) -> PoolStringArray:
+	
+	var user = yield(__get_user(user_id), "completed")
+	
+	var image_url = user.data[0].profile_image_url
+	
+	## Request IMAGE payload
+	var http_request : HTTPRequest = HTTPRequest.new()
+	add_child(http_request)
+	
+	var error = http_request.request(image_url)
+	
+	var response = yield(http_request, "request_completed")
+	var body
+	if response[1] >= 200 or response[1] <= 300:
+	
+		body = response[3]
+	
+	else:
+	
+		body = null
+	
+	return body
+
+
+func __get_user(user_id: String) -> Dictionary:
+	
+	## Request USER payload
+	var http_request : HTTPRequest = HTTPRequest.new()
+	add_child(http_request)
+	
+	var custom_header : PoolStringArray = [
+		"Authorization: Bearer " + Auth.app_token,
+		"Client-Id: " + OS.get_environment("TWITCH_CLIENT_ID")]
+	
+	var error = http_request.request(__TWITCH_USER_URI + user_id, custom_header)
+	
+	var response = yield(http_request, "request_completed")
+	
+	var body : Dictionary = __parse_body(response)
+	
+	remove_child(http_request)
+	
+	return body
+
+
+func __parse_body(response) -> Dictionary:
+	var body = response[3].get_string_from_utf8()
+	body = JSON.parse(body).result
+	return body
